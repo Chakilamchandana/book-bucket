@@ -1,0 +1,232 @@
+:root {
+  --color-primary: #264653;
+  --color-primary-light: #457b9d;
+  --color-text: #dee2e6;
+  --color-text-dark: #808080;
+  --color-background-100: #343a40;
+  --color-background-500: #2b3035;
+  --color-background-900: #212529;
+  --color-red: #fa5252;
+  --color-red-dark: #e03131;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 72.5%;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+
+  color: var(--color-text);
+  background-color: var(--color-background-900);
+  padding: 2.4rem;
+}
+
+.nav-bar {
+  display: grid;
+  align-items: center;
+  height: 5rem;
+  padding: 0 3.2rem;
+  background-color: var(--color-primary);
+  border-radius: 0.9rem;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.logo span {
+  font-size: 3.2rem;
+}
+
+.logo h1 {
+  font-size: 2.4rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.main {
+  margin-top: 2rem;
+  height: calc(100vh - 7.2rem - 3 * 2.4rem);
+  display: flex;
+  gap: 10rem;
+  justify-content: center;
+}
+
+.pane {
+  width: 42rem;
+  max-width: 42rem;
+  background-color: var(--color-background-500);
+  border-radius: 0.9rem;
+  overflow: scroll;
+  position: relative;
+}
+
+.pane h2 {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+  font-size: 2.6rem;
+}
+
+.list {
+  list-style: none;
+  padding: 0.8rem 0;
+  overflow: scroll;
+}
+
+label {
+  display: flex;
+  gap: 1rem;
+}
+
+.list li {
+  position: relative;
+  display: grid;
+  column-gap: 2.4rem;
+  font-size: 1.6rem;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 1.6rem 3.2rem;
+  border-bottom: 1px solid var(--color-background-100);
+}
+
+.list.list-items li {
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.list.list-items li:hover {
+  background-color: var(--color-background-100);
+}
+
+.list div {
+  display: flex;
+  align-items: center;
+  gap: 2.4rem;
+}
+
+.list p {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.poster {
+  width: 50%;
+}
+
+.thumbnail-img {
+  width: 7rem;
+  height: 8rem;
+}
+
+.alert {
+  display: flex;
+  justify-content: center;
+  color: var(--color-text-dark);
+  font-size: 1.2rem;
+}
+
+.btn-add {
+  background-color: var(--color-primary);
+  color: var(--color-text);
+  border: none;
+  border-radius: 10rem;
+  font-size: 1.4rem;
+  padding: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-top: 1rem;
+}
+
+.btn-add:hover {
+  background-color: var(--color-primary-light);
+}
+
+em {
+  color: var(--color-text-dark);
+}
+
+.btn-delete {
+  position: absolute;
+  right: 2.4rem;
+
+  height: 1.8rem;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: none;
+  background-color: var(--color-red);
+  color: var(--color-background-900);
+  font-size: 0.9rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-delete:hover {
+  background-color: var(--color-red-dark);
+}
+
+.details {
+  line-height: 1.4;
+  font-size: 1.2rem;
+}
+
+.details-overview {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+}
+
+.details-overview p {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.details-overview li {
+  padding: 2rem 2rem;
+  list-style: none;
+  transition: all 0.3s;
+  border-bottom: 1px solid var(--color-background-100);
+}
+
+.details li:hover {
+  background-color: var(--color-background-100);
+}
+
+.author {
+  color: yellow;
+}
+
+footer {
+  background-color: var(--color-primary);
+  display: grid;
+  margin-top: 2rem;
+  border-radius: 0.9rem;
+  height: 7rem;
+  justify-content: center;
+  justify-items: center;
+  font-size: 1.2rem;
+}
+
+footer p {
+  margin: 1rem;
+}
+
+a {
+  text-decoration: underline;
+  color: var(--color-text);
+}
