@@ -77,3 +77,7 @@ To maintain simplicity, book data has been manually entered into the bookdata.js
 3. image: An image representing the book, such as a poster or album cover.
 4. author: The name of the book's author.
 5. summary: A brief overview providing insights into the content and theme of the book.
+
+TO run the project:
+npx nodemon - to run the server
+npm start - to run the client
