@@ -77,3 +77,10 @@ To maintain simplicity, book data has been manually entered into the bookdata.js
 3. image: An image representing the book, such as a poster or album cover.
 4. author: The name of the book's author.
 5. summary: A brief overview providing insights into the content and theme of the book.
+
+To run the project locally (update the serverURL in App.js under frontend/src to "http://localhost:5001" ) and run below commands
+
+1. npx nodemon - to run the server
+2. npm start - to run the client
+
+To view the live project click here - https://book-bucket.netlify.app/

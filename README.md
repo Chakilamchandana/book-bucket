@@ -78,8 +78,9 @@ To maintain simplicity, book data has been manually entered into the bookdata.js
 4. author: The name of the book's author.
 5. summary: A brief overview providing insights into the content and theme of the book.
 
-TO run the project:
-npx nodemon - to run the server
-npm start - to run the client
+To run the project locally (update the serverURL in App.js under frontend/src to "http://localhost:5001" ) and run below commands
+
+1. npx nodemon - to run the server
+2. npm start - to run the client
 
 To view the live project click here - https://book-bucket.netlify.app/
