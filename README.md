@@ -81,3 +81,5 @@ To maintain simplicity, book data has been manually entered into the bookdata.js
 TO run the project:
 npx nodemon - to run the server
 npm start - to run the client
+
+To view the live project click here - https://book-bucket.netlify.app/
