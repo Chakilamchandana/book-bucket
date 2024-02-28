@@ -83,4 +83,4 @@ To run the project locally (update the serverURL in App.js under frontend/src to
 1. npx nodemon - to run the server
 2. npm start - to run the client
 
-To view the live project click here - https://book-bucket.netlify.app/
+To view the live project click here - https://book-bucket.netlify.app/ (It might take a few minutes for the application to load.)
