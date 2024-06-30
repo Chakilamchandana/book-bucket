@@ -1,14 +1,20 @@
 import React, { useEffect, useState } from "react";
 
+/**
+ * Main application component for Book Bucket.
+ * @returns {JSX.Element} JSX for the entire application.
+ */
 export default function App() {
-  // const serverURL = "http://localhost:5001";
+  // const serverURL = "http://localhost:5001"; //for local server
   const serverURL = "https://book-bucket-rsf8.onrender.com";
   const [categories, setCategories] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [books, setBooks] = useState([]);
   const [cart, setCart] = useState([]);
 
-  //Fetching all categories during initial mount
+  /**
+   * Fetches all categories from the server during component mount.
+   */
   useEffect(() => {
     async function fetchCategories() {
       try {
@@ -25,7 +31,10 @@ export default function App() {
     fetchCategories();
   }, []);
 
-  //Fetching the books associated with the categories selected
+  /**
+   * Fetches books associated with the selected categories.
+   * @param {number[]} selectedCatIds - Array of selected category IDs.
+   */
   async function fetchBooks(selectedCatIds) {
     try {
       if (selectedCatIds.length === 0) {
@@ -44,7 +53,10 @@ export default function App() {
     }
   }
 
-  //Function to handle the category selection
+  /**
+   * Handles the change in category selection.
+   * @param {number} categoryId - ID of the selected category.
+   */
   function handleCheckChange(categoryId) {
     setSelectedCategories((prevCat) => {
       const updatedCategories = prevCat.includes(categoryId)
@@ -58,7 +70,10 @@ export default function App() {
     });
   }
 
-  //Function to add a book to the cart
+  /**
+   * Adds a book to the cart.
+   * @param {number} bookId - ID of the book to add to cart.
+   */
   async function addToCart(bookId) {
     try {
       const response = await fetch(`${serverURL}/api/cart/add/${bookId}`, {
@@ -80,6 +95,10 @@ export default function App() {
     }
   }
 
+  /**
+   * Removes a book from the cart.
+   * @param {number} bookId - ID of the book to remove from cart.
+   */
   async function removeBook(bookId) {
     try {
       const response = await fetch(`${serverURL}/api/cart/remove/${bookId}`, {
@@ -117,6 +136,10 @@ export default function App() {
   );
 }
 
+/**
+ * Renders the navigation bar.
+ * @returns {JSX.Element} JSX for the navigation bar.
+ */
 function NavBar() {
   return (
     <nav className="nav-bar">
@@ -125,6 +148,10 @@ function NavBar() {
   );
 }
 
+/**
+ * Renders the logo.
+ * @returns {JSX.Element} JSX for the logo.
+ */
 function Logo() {
   return (
     <div className="logo">
@@ -133,14 +160,31 @@ function Logo() {
   );
 }
 
+/**
+ * Renders the main content section.
+ * @param {Object} children - React component children to render within the main section.
+ * @returns {JSX.Element} JSX for the main section.
+ */
 function Main({ children }) {
   return <main className="main">{children}</main>;
 }
 
+/**
+ * Renders a box container for content.
+ * @param {Object} children - React component children to render within the box.
+ * @returns {JSX.Element} JSX for the box container.
+ */
 function Box({ children }) {
   return <div className="pane">{children}</div>;
 }
 
+/**
+ * Renders a list of categories.
+ * @param {Object[]} categories - Array of category objects.
+ * @param {number[]} selectedCategories - Array of selected category IDs.
+ * @param {function} onCheckChange - Function to handle category checkbox change.
+ * @returns {JSX.Element} JSX for the category list.
+ */
 function CategoryList({ categories, selectedCategories, onCheckChange }) {
   return (
     <>
@@ -159,6 +203,13 @@ function CategoryList({ categories, selectedCategories, onCheckChange }) {
   );
 }
 
+/**
+ * Renders a single category checkbox.
+ * @param {Object} category - Category object.
+ * @param {boolean} isChecked - Flag indicating if the category is checked.
+ * @param {function} onCheckChange - Function to handle category checkbox change.
+ * @returns {JSX.Element} JSX for a category checkbox.
+ */
 function Category({ category, isChecked, onCheckChange }) {
   return (
     <li key={category.id}>
@@ -174,6 +225,13 @@ function Category({ category, isChecked, onCheckChange }) {
   );
 }
 
+/**
+ * Renders a list of books.
+ * @param {Object[]} books - Array of book objects.
+ * @param {function} onAdd - Function to add a book to the cart.
+ * @param {Object[]} [cart=[]] - Array of books in the cart.
+ * @returns {JSX.Element} JSX for the list of books.
+ */
 function BookList({ books, onAdd, cart = [] }) {
   return (
     <>
@@ -211,6 +269,12 @@ function BookList({ books, onAdd, cart = [] }) {
   );
 }
 
+/**
+ * Renders the shopping cart.
+ * @param {Object[]} cart - Array of books in the cart.
+ * @param {function} onDelete - Function to remove a book from the cart.
+ * @returns {JSX.Element} JSX for the shopping cart.
+ */
 function Cart({ cart, onDelete }) {
   return (
     <div className="list list-items">
@@ -241,6 +305,10 @@ function Cart({ cart, onDelete }) {
   );
 }
 
+/**
+ * Renders the footer component.
+ * @returns {JSX.Element} JSX for the footer.
+ */
 function Footer() {
   return (
     <footer className="footer">

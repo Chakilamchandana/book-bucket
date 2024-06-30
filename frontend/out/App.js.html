@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: App.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: App.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useEffect, useState } from "react";
+
+/**
+ * Main application component for Book Bucket.
+ * @returns {JSX.Element} JSX for the entire application.
+ */
+export default function App() {
+  // const serverURL = "http://localhost:5001"; //for local server
+  const serverURL = "https://book-bucket-rsf8.onrender.com";
+  const [categories, setCategories] = useState([]);
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [books, setBooks] = useState([]);
+  const [cart, setCart] = useState([]);
+
+  /**
+   * Fetches all categories from the server during component mount.
+   */
+  useEffect(() => {
+    async function fetchCategories() {
+      try {
+        const res = await fetch(`${serverURL}/api/getCategories`);
+        if (!res.ok) {
+          throw new Error(`Failed to fetch categories`);
+        }
+        const data = await res.json();
+        setCategories(data);
+      } catch (error) {
+        console.error("Error fetching categories:", error.message);
+      }
+    }
+    fetchCategories();
+  }, []);
+
+  /**
+   * Fetches books associated with the selected categories.
+   * @param {number[]} selectedCatIds - Array of selected category IDs.
+   */
+  async function fetchBooks(selectedCatIds) {
+    try {
+      if (selectedCatIds.length === 0) {
+        setBooks([]); // Clear the books if no categories are selected
+        return;
+      }
+      const promises = selectedCatIds.map((categoryId) =>
+        fetch(`${serverURL}/api/books/${categoryId}`).then((res) => res.json())
+      );
+
+      const booksByCat = await Promise.all(promises);
+      const allBooks = booksByCat.flat();
+      setBooks(allBooks);
+    } catch (error) {
+      console.error("Error fetching book");
+    }
+  }
+
+  /**
+   * Handles the change in category selection.
+   * @param {number} categoryId - ID of the selected category.
+   */
+  function handleCheckChange(categoryId) {
+    setSelectedCategories((prevCat) => {
+      const updatedCategories = prevCat.includes(categoryId)
+        ? prevCat.filter((id) => id !== categoryId)
+        : [...prevCat, categoryId];
+
+      // Fetch books after updating the selected categories
+      fetchBooks(updatedCategories);
+
+      return updatedCategories;
+    });
+  }
+
+  /**
+   * Adds a book to the cart.
+   * @param {number} bookId - ID of the book to add to cart.
+   */
+  async function addToCart(bookId) {
+    try {
+      const response = await fetch(`${serverURL}/api/cart/add/${bookId}`, {
+        method: "POST",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to add to cart.");
+      }
+      setCart((prevCart) => {
+        const updatedCart = [
+          ...prevCart,
+          books.find((book) => book.id === bookId),
+        ];
+        return updatedCart;
+      });
+    } catch (error) {
+      console.error("Couldn't add the book to cart");
+    }
+  }
+
+  /**
+   * Removes a book from the cart.
+   * @param {number} bookId - ID of the book to remove from cart.
+   */
+  async function removeBook(bookId) {
+    try {
+      const response = await fetch(`${serverURL}/api/cart/remove/${bookId}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) {
+        throw new Error("Failed to remove from cart");
+      }
+      setCart((prevCart) => prevCart.filter((book) => book.id !== bookId));
+    } catch (error) {
+      console.error("Failed to remove book from cart");
+    }
+  }
+
+  return (
+    &lt;div>
+      &lt;NavBar />
+      &lt;Main>
+        &lt;Box>
+          &lt;CategoryList
+            categories={categories}
+            selectedCategories={selectedCategories}
+            onCheckChange={handleCheckChange}
+          />
+        &lt;/Box>
+        &lt;Box>
+          &lt;BookList books={books} onAdd={addToCart} cart={cart} />
+        &lt;/Box>
+        &lt;Box>
+          &lt;Cart cart={cart} onDelete={removeBook} />
+        &lt;/Box>
+      &lt;/Main>
+      &lt;Footer />
+    &lt;/div>
+  );
+}
+
+/**
+ * Renders the navigation bar.
+ * @returns {JSX.Element} JSX for the navigation bar.
+ */
+function NavBar() {
+  return (
+    &lt;nav className="nav-bar">
+      &lt;Logo />
+    &lt;/nav>
+  );
+}
+
+/**
+ * Renders the logo.
+ * @returns {JSX.Element} JSX for the logo.
+ */
+function Logo() {
+  return (
+    &lt;div className="logo">
+      &lt;h1>Book Bucket 🪣&lt;/h1>
+    &lt;/div>
+  );
+}
+
+/**
+ * Renders the main content section.
+ * @param {Object} children - React component children to render within the main section.
+ * @returns {JSX.Element} JSX for the main section.
+ */
+function Main({ children }) {
+  return &lt;main className="main">{children}&lt;/main>;
+}
+
+/**
+ * Renders a box container for content.
+ * @param {Object} children - React component children to render within the box.
+ * @returns {JSX.Element} JSX for the box container.
+ */
+function Box({ children }) {
+  return &lt;div className="pane">{children}&lt;/div>;
+}
+
+/**
+ * Renders a list of categories.
+ * @param {Object[]} categories - Array of category objects.
+ * @param {number[]} selectedCategories - Array of selected category IDs.
+ * @param {function} onCheckChange - Function to handle category checkbox change.
+ * @returns {JSX.Element} JSX for the category list.
+ */
+function CategoryList({ categories, selectedCategories, onCheckChange }) {
+  return (
+    &lt;>
+      &lt;h2>Select your favourite genre 🎨&lt;/h2>
+      &lt;ul className="list list-items">
+        {categories?.map((category) => (
+          &lt;Category
+            key={category.id}
+            category={category}
+            isChecked={selectedCategories.includes(category.id)}
+            onCheckChange={onCheckChange}
+          />
+        ))}
+      &lt;/ul>
+    &lt;/>
+  );
+}
+
+/**
+ * Renders a single category checkbox.
+ * @param {Object} category - Category object.
+ * @param {boolean} isChecked - Flag indicating if the category is checked.
+ * @param {function} onCheckChange - Function to handle category checkbox change.
+ * @returns {JSX.Element} JSX for a category checkbox.
+ */
+function Category({ category, isChecked, onCheckChange }) {
+  return (
+    &lt;li key={category.id}>
+      &lt;label>
+        &lt;input
+          type="checkbox"
+          checked={isChecked}
+          onChange={() => onCheckChange(category.id)}
+        />
+        &lt;h3>{category.name}&lt;/h3>
+      &lt;/label>
+    &lt;/li>
+  );
+}
+
+/**
+ * Renders a list of books.
+ * @param {Object[]} books - Array of book objects.
+ * @param {function} onAdd - Function to add a book to the cart.
+ * @param {Object[]} [cart=[]] - Array of books in the cart.
+ * @returns {JSX.Element} JSX for the list of books.
+ */
+function BookList({ books, onAdd, cart = [] }) {
+  return (
+    &lt;>
+      &lt;h2>Details 📚&lt;/h2>
+      &lt;div className="details">
+        {books?.length === 0 ? (
+          &lt;p className="alert">
+            Select the category to preview details of the books
+          &lt;/p>
+        ) : (
+          &lt;ul className="details-overview">
+            {books?.map((book) => {
+              const isInCart = cart.some((item) => item.id === book.id);
+              return (
+                &lt;li key={book.id}>
+                  &lt;img className="poster" src={book.image} alt={book.title} />
+                  &lt;h3>{book.title}&lt;/h3>
+                  &lt;p>
+                    by&lt;p className="author">{book.author}&lt;/p>
+                  &lt;/p>
+                  &lt;p>{book.summary}&lt;/p>
+                  {!isInCart &amp;&amp; (
+                    &lt;button className="btn-add" onClick={() => onAdd(book.id)}>
+                      Add to Cart
+                    &lt;/button>
+                  )}
+                  {isInCart &amp;&amp; &lt;em>Added to Cart&lt;/em>}
+                &lt;/li>
+              );
+            })}
+          &lt;/ul>
+        )}
+      &lt;/div>
+    &lt;/>
+  );
+}
+
+/**
+ * Renders the shopping cart.
+ * @param {Object[]} cart - Array of books in the cart.
+ * @param {function} onDelete - Function to remove a book from the cart.
+ * @returns {JSX.Element} JSX for the shopping cart.
+ */
+function Cart({ cart, onDelete }) {
+  return (
+    &lt;div className="list list-items">
+      &lt;h2>Your Cart 🛒 &lt;/h2>
+      {cart.length === 0 ? (
+        &lt;p className="alert">
+          Your cart is empty. Select your category and add books to cart
+        &lt;/p>
+      ) : (
+        &lt;ul>
+          {cart.map((book) => (
+            &lt;li className="cart-items" key={book.id}>
+              &lt;img
+                src={book.image}
+                className="thumbnail-img"
+                alt={book.title}
+              />
+              &lt;h3>{book.title}&lt;/h3>
+              &lt;p>{book.author}&lt;/p>
+              &lt;button className="btn-delete" onClick={() => onDelete(book.id)}>
+                X
+              &lt;/button>
+            &lt;/li>
+          ))}
+        &lt;/ul>
+      )}
+    &lt;/div>
+  );
+}
+
+/**
+ * Renders the footer component.
+ * @returns {JSX.Element} JSX for the footer.
+ */
+function Footer() {
+  return (
+    &lt;footer className="footer">
+      &lt;p> ~ Made wholly for learning purposes ~&lt;/p>
+      &lt;p>
+        &lt;span>
+          &lt;a href="https://chandanachakilam.netlify.app/">Chandana Chakilam&lt;/a>
+        &lt;/span>
+        &amp;copy;2024
+      &lt;/p>
+    &lt;/footer>
+  );
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#BookList">BookList</a></li><li><a href="global.html#Box">Box</a></li><li><a href="global.html#Cart">Cart</a></li><li><a href="global.html#Category">Category</a></li><li><a href="global.html#CategoryList">CategoryList</a></li><li><a href="global.html#Footer">Footer</a></li><li><a href="global.html#Logo">Logo</a></li><li><a href="global.html#Main">Main</a></li><li><a href="global.html#NavBar">NavBar</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.3</a> on Sat Jun 29 2024 19:57:19 GMT-0400 (Eastern Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
